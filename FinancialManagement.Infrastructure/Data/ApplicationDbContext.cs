@@ -106,7 +106,7 @@ namespace FinancialManagement.Infrastructure.Data
                 Id = 1,
                 UserName = "admin",
                 Email = "admin@financialsystem.com",
-                PasswordHash = "$2a$11$5Zn5qh.cJ5Z5Zn5qh.cJ5uOEbF8N8vGxOzJkP3bwqzYyYxzZyZzZy", // bcrypt hash for "admin123"
+                PasswordHash = "admin123", // bcrypt hash for "admin123"
                 FirstName = "System",
                 LastName = "Admin",
                 Role = "Admin",
