@@ -17,14 +17,14 @@ namespace FinancialManagement.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> Login([FromQuery] string email, [FromQuery] string password)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                return BadRequest(ModelState);
+                return BadRequest("Email and password are required.");
             }
 
-            var command = new LoginCommand(loginDto.Email, loginDto.Password);
+            var command = new LoginCommand(email, password);
             var result = await _mediator.Send(command);
 
             if (!result.Success)
