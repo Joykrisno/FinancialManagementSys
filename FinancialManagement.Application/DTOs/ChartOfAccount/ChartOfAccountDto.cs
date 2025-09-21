@@ -22,13 +22,11 @@ namespace FinancialManagement.Application.DTOs.ChartOfAccount
 
         public int? ParentAccountId { get; set; }
         public string? ParentAccountName { get; set; }
-
         public bool IsParent { get; set; } = false;
         public int Level { get; set; } = 1;
 
         [Range(0, double.MaxValue, ErrorMessage = "Opening Balance must be non-negative")]
         public decimal OpeningBalance { get; set; } = 0;
-
         public decimal CurrentBalance { get; set; } = 0;
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; }
@@ -76,5 +74,7 @@ namespace FinancialManagement.Application.DTOs.ChartOfAccount
 
         [Range(0, double.MaxValue, ErrorMessage = "Opening Balance must be non-negative")]
         public decimal OpeningBalance { get; set; } = 0;
+
+        public bool IsActive { get; set; } = true;
     }
 }

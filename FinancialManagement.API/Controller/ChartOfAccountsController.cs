@@ -23,60 +23,82 @@ namespace FinancialManagement.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetChartOfAccounts([FromQuery] GetChartOfAccountsQuery query)
         {
-            var result = await _mediator.Send(query);
-
-            if (!result.Success)
+            try
             {
-                return BadRequest(result);
+                var result = await _mediator.Send(query);
+                if (!result.Success)
+                {
+                    return BadRequest(result);
+                }
+                return Ok(result);
             }
-
-            return Ok(result);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Internal server error", Error = ex.Message });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateChartOfAccount([FromBody] CreateChartOfAccountDto createDto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        Success = false,
+                        Message = "Validation failed",
+                        Errors = ModelState.SelectMany(x => x.Value.Errors.Select(e => e.ErrorMessage))
+                    });
+                }
+
+                var currentUser = User.FindFirst(ClaimTypes.Name)?.Value ?? "System";
+                var command = new CreateChartOfAccountCommand
+                {
+                    AccountCode = createDto.AccountCode,
+                    AccountName = createDto.AccountName,
+                    AccountType = createDto.AccountType,
+                    Description = createDto.Description,
+                    ParentAccountId = createDto.ParentAccountId,
+                    OpeningBalance = createDto.OpeningBalance,
+                    CreatedBy = currentUser
+                };
+
+                var result = await _mediator.Send(command);
+                if (!result.Success)
+                {
+                    return BadRequest(result);
+                }
+
+                return CreatedAtAction(nameof(GetChartOfAccounts), new { id = result.Data?.Id }, result);
             }
-
-            var currentUser = User.FindFirst(ClaimTypes.Name)?.Value ?? "System";
-
-            var command = new CreateChartOfAccountCommand
+            catch (Exception ex)
             {
-                AccountCode = createDto.AccountCode,
-                AccountName = createDto.AccountName,
-                AccountType = createDto.AccountType,
-                Description = createDto.Description,
-                ParentAccountId = createDto.ParentAccountId,
-                OpeningBalance = createDto.OpeningBalance,
-                CreatedBy = currentUser
-            };
-
-            var result = await _mediator.Send(command);
-
-            if (!result.Success)
-            {
-                return BadRequest(result);
+                return StatusCode(500, new { Success = false, Message = "Internal server error", Error = ex.Message });
             }
-
-            return CreatedAtAction(nameof(GetChartOfAccounts), new { id = result.Data?.Id }, result);
         }
 
         [HttpGet("account-types")]
+        [AllowAnonymous] // This can be public as it's just returning static data
         public IActionResult GetAccountTypes()
         {
-            var accountTypes = new[]
+            try
             {
-                new { Value = "Asset", Text = "Asset" },
-                new { Value = "Liability", Text = "Liability" },
-                new { Value = "Equity", Text = "Equity" },
-                new { Value = "Revenue", Text = "Revenue" },
-                new { Value = "Expense", Text = "Expense" }
-            };
-
-            return Ok(new { Success = true, Data = accountTypes });
+                var accountTypes = new[]
+                {
+                    new { Value = "Asset", Text = "Asset" },
+                    new { Value = "Liability", Text = "Liability" },
+                    new { Value = "Equity", Text = "Equity" },
+                    new { Value = "Revenue", Text = "Revenue" },
+                    new { Value = "Expense", Text = "Expense" }
+                };
+                return Ok(new { Success = true, Data = accountTypes });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "Internal server error", Error = ex.Message });
+            }
         }
     }
 }
