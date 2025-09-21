@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using FinancialManagement.Application;
 using FinancialManagement.Infrastructure;
+using FinancialManagement.Web.Servic;
+using FinancialManagement.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +16,17 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add HttpClient for API calls
+// Ensure the BaseAddress is a valid absolute URI and ends with a slash
 builder.Services.AddHttpClient("ApiClient", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration.GetSection("ApiSettings:BaseUrl").Value ?? "https://localhost:7001/api/");
+    var baseUrl = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value;
+    if (string.IsNullOrWhiteSpace(baseUrl))
+    {
+        baseUrl = "https://localhost:7001/api/";
+    }
+    // Ensure trailing slash for correct URI combination
+    if (!baseUrl.EndsWith("/")) baseUrl += "/";
+    client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(builder.Configuration.GetValue<int>("ApiSettings:Timeout", 30));
 });
 
@@ -53,6 +63,12 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+// Add this line to register your IApiService and ApiService as scoped
+builder.Services.AddScoped<IApiService, ApiService>();
+
+// Register IHttpContextAccessor for DI
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

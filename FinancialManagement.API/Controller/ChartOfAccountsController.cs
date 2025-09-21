@@ -10,7 +10,7 @@ namespace FinancialManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ChartOfAccountsController : ControllerBase
     {
         private readonly IMediator _mediator;
