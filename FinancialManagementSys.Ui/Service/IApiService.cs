@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace FinancialManagement.Web.Servic
+namespace FinancialManagement.Web.Services
 {
     public interface IApiService
     {

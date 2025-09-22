@@ -1,9 +1,8 @@
-using System.Text;
+﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using FinancialManagement.Application;
 using FinancialManagement.Infrastructure;
-using FinancialManagement.Web.Servic;
 using FinancialManagement.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,18 +15,26 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add HttpClient for API calls
-// Ensure the BaseAddress is a valid absolute URI and ends with a slash
 builder.Services.AddHttpClient("ApiClient", client =>
 {
+    // Read BaseUrl from configuration
     var baseUrl = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value;
+
+    // If not configured, fallback to your API swagger base URL
     if (string.IsNullOrWhiteSpace(baseUrl))
     {
-        baseUrl = "https://localhost:7001/api/";
+        baseUrl = "https://localhost:7162/"; // আপনার API URL
     }
-    // Ensure trailing slash for correct URI combination
+
+    // Ensure trailing slash for proper URI combination
     if (!baseUrl.EndsWith("/")) baseUrl += "/";
+
     client.BaseAddress = new Uri(baseUrl);
-    client.Timeout = TimeSpan.FromSeconds(builder.Configuration.GetValue<int>("ApiSettings:Timeout", 30));
+
+    // Optional timeout configuration
+    client.Timeout = TimeSpan.FromSeconds(
+        builder.Configuration.GetValue<int>("ApiSettings:Timeout", 30)
+    );
 });
 
 // Add JWT Authentication for Web App
@@ -64,7 +71,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Add this line to register your IApiService and ApiService as scoped
+// Register ApiService
 builder.Services.AddScoped<IApiService, ApiService>();
 
 // Register IHttpContextAccessor for DI

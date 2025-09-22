@@ -1,5 +1,5 @@
 ﻿using FinancialManagement.Domain.Entities;
-using FinancialManagement.Web.Servic;
+using FinancialManagement.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +17,7 @@ namespace FinancialManagement.Web.Controllers
         // GET: ChartOfAccounts
         public async Task<IActionResult> Index()
         {
-            var accounts = await _apiService.GetAsync<List<ChartOfAccount>>("ChartOfAccounts");
+           var accounts = await _apiService.GetAsync<List<ChartOfAccount>>("ChartOfAccounts");
             return View(accounts);
         }
 

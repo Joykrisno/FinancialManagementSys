@@ -1,6 +1,4 @@
-﻿using FinancialManagement.Web.Servic;
-using Microsoft.AspNetCore.Http;
-using System.Net;
+﻿using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -12,25 +10,27 @@ namespace FinancialManagement.Web.Services
         private readonly HttpClient _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ApiService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public ApiService(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("ApiClient");
             _httpContextAccessor = httpContextAccessor;
         }
 
-        private async Task AddJwtTokenAsync()
+        private Task AddJwtTokenAsync()
         {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("JwtToken");
+            var token = _httpContextAccessor.HttpContext?.Session.GetString("JwtToken");
             if (!string.IsNullOrEmpty(token))
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
             }
+            return Task.CompletedTask;
         }
 
-        public async Task<T> GetAsync<T>(string endpoint)
+        public async Task<T?> GetAsync<T>(string endpoint)
         {
             await AddJwtTokenAsync();
+
             var response = await _httpClient.GetAsync(endpoint);
 
             if (response.IsSuccessStatusCode)
@@ -46,6 +46,7 @@ namespace FinancialManagement.Web.Services
         public async Task<ApiResponse> PostAsync<T>(string endpoint, T data)
         {
             await AddJwtTokenAsync();
+
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -62,6 +63,7 @@ namespace FinancialManagement.Web.Services
         public async Task<ApiResponse> PutAsync<T>(string endpoint, T data)
         {
             await AddJwtTokenAsync();
+
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -78,6 +80,7 @@ namespace FinancialManagement.Web.Services
         public async Task<ApiResponse> DeleteAsync(string endpoint)
         {
             await AddJwtTokenAsync();
+
             var response = await _httpClient.DeleteAsync(endpoint);
 
             return new ApiResponse
