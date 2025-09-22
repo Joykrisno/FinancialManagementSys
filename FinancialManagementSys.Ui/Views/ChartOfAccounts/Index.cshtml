@@ -1,26 +1,38 @@
 @model IEnumerable<FinancialManagement.Domain.Entities.ChartOfAccount>
-@{
-    ViewData["Title"] = "Chart of Accounts";
+
+<h2>Chart of Accounts</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
 }
-
-<h1>Chart of Accounts</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Account</a>
-</p>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.First().AccountCode)</th>
-            <th>@Html.DisplayNameFor(model => model.First().AccountName)</th>
-            <th>@Html.DisplayNameFor(model => model.First().AccountType)</th>
-            <th>@Html.DisplayNameFor(model => model.First().IsActive)</th>
-            <th>@Html.DisplayNameFor(model => model.First().CreatedDate)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-   
-    </tbody>
-</table>
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Account Code</th>
+                <th>Account Name</th>
+                <th>Type</th>
+                <th>Balance</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.AccountCode</td>
+                    <td>@item.AccountName</td>
+                    <td>@item.AccountType</td>
+                    <td>@item.CurrentBalance</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

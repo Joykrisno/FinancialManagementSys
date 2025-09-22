@@ -1,4 +1,5 @@
 ﻿using FinancialManagement.Domain.Entities;
+using FinancialManagement.Web.Models.ApiResponse;
 using FinancialManagement.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,20 @@ namespace FinancialManagement.Web.Controllers
         // GET: ChartOfAccounts
         public async Task<IActionResult> Index()
         {
-           var accounts = await _apiService.GetAsync<List<ChartOfAccount>>("ChartOfAccounts");
+            var response = await _apiService.GetAsync<ApiListResponse<ChartOfAccount>>("ChartOfAccounts");
+
+            if (response == null || !response.Success)
+            {
+                ViewBag.Error = response?.Message ?? "Failed to load Chart of Accounts.";
+                return View(new List<ChartOfAccount>());
+            }
+
+            var accounts = response.Data?.Data ?? new List<ChartOfAccount>();
+
             return View(accounts);
         }
+
+
 
         // GET: ChartOfAccounts/Details/5
         public async Task<IActionResult> Details(int id)
