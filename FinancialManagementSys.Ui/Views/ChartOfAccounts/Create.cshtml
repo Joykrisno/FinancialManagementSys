@@ -3,65 +3,66 @@
     ViewData["Title"] = "Create Chart of Account";
 }
 
-<h1 class="mb-4">Create Chart of Account</h1>
-
-<form asp-action="Create" method="post">
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <label asp-for="AccountCode" class="form-label"></label>
-            <input asp-for="AccountCode" class="form-control" />
-            <span asp-validation-for="AccountCode" class="text-danger"></span>
-        </div>
-        <div class="col-md-6">
-            <label asp-for="AccountName" class="form-label"></label>
-            <input asp-for="AccountName" class="form-control" />
-            <span asp-validation-for="AccountName" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <label asp-for="AccountType" class="form-label"></label>
-            <input asp-for="AccountType" class="form-control" />
-            <span asp-validation-for="AccountType" class="text-danger"></span>
-        </div>
-        <div class="col-md-6">
-            <label asp-for="ParentAccountId" class="form-label"></label>
-            <input asp-for="ParentAccountId" class="form-control" />
-            <span asp-validation-for="ParentAccountId" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <label asp-for="OpeningBalance" class="form-label"></label>
-            <input asp-for="OpeningBalance" class="form-control" />
-            <span asp-validation-for="OpeningBalance" class="text-danger"></span>
-        </div>
-        <div class="col-md-6 d-flex align-items-center">
-            <div class="form-check mt-2">
-                <input asp-for="IsActive" class="form-check-input" />
-                <label asp-for="IsActive" class="form-check-label"></label>
-                <span asp-validation-for="IsActive" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-12">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-    </div>
-
+<div class="container-fluid">
     <div class="row">
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Create</button>
-            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <div class="col-lg-8 col-md-10 col-12 mx-auto">
+            <h1 class="mb-4">Create Chart of Account</h1>
+            <form asp-action="Create" method="post">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="AccountCode" class="form-label"></label>
+                        <input asp-for="AccountCode" class="form-control" />
+                        <span asp-validation-for="AccountCode" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="AccountName" class="form-label"></label>
+                        <input asp-for="AccountName" class="form-control" />
+                        <span asp-validation-for="AccountName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="AccountType" class="form-label"></label>
+                        <input asp-for="AccountType" class="form-control" />
+                        <span asp-validation-for="AccountType" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ParentAccountId" class="form-label"></label>
+                        <input asp-for="ParentAccountId" class="form-control" />
+                        <span asp-validation-for="ParentAccountId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="OpeningBalance" class="form-label"></label>
+                        <input asp-for="OpeningBalance" class="form-control" />
+                        <span asp-validation-for="OpeningBalance" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="form-check mt-2">
+                            <input asp-for="IsActive" class="form-check-input" />
+                            <label asp-for="IsActive" class="form-check-label"></label>
+                            <span asp-validation-for="IsActive" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
