@@ -4,46 +4,117 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FinancialManagement.Web</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/FinancialManagementSys.Ui.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+    <style>
+        /* Fixed Header & Footer Layout CSS */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+
+        header nav.navbar {
+            background-color: #0d6efd;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+        }
+
+            header nav.navbar .navbar-brand {
+                color: #fff;
+                font-weight: bold;
+            }
+
+            header nav.navbar .nav-link {
+                color: #fff;
+            }
+
+                header nav.navbar .nav-link:hover {
+                    color: #ffc107;
+                }
+
+        main.container {
+            flex: 1 0 auto;
+            padding-top: 80px; /* header height */
+            padding-bottom: 80px; /* footer height */
+            background-color: #fff;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            flex-shrink: 0;
+            padding: 15px 0;
+        }
+
+            footer a {
+                color: #ffc107;
+                text-decoration: none;
+            }
+
+                footer a:hover {
+                    text-decoration: underline;
+                }
+
+        table.dataTable {
+            width: 100% !important;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FinancialManagementSys.Ui</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Financial Management System</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="ChartOfAccounts" asp-action="Index">Chart of Accounts</a>
+                            <a class="nav-link" asp-controller="ChartOfAccounts" asp-action="Index">Chart of Accounts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ChartOfAccounts" asp-action="Create">Create</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <footer class="text-center">
         <div class="container">
-            &copy; 2025 - FinancialManagement.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - FinancialManagement.Web - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

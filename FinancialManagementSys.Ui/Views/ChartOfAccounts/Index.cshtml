@@ -1,38 +1,54 @@
-@model IEnumerable<FinancialManagement.Domain.Entities.ChartOfAccount>
+@{
+    ViewData["Title"] = "Chart of Accounts";
+}
 
 <h2>Chart of Accounts</h2>
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
-}
-else
-{
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Account Code</th>
-                <th>Account Name</th>
-                <th>Type</th>
-                <th>Balance</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.AccountCode</td>
-                    <td>@item.AccountName</td>
-                    <td>@item.AccountType</td>
-                    <td>@item.CurrentBalance</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
+<table id="accountsTable" class="display table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>Account Code</th>
+            <th>Account Name</th>
+            <th>Type</th>
+            <th>Opening Balance</th>
+            <th>Current Balance</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if (!$.fn.DataTable) {
+                console.error("DataTables is not loaded!");
+                return;
             }
-        </tbody>
-    </table>
+
+            $('#accountsTable').DataTable({
+                "ajax": {
+                    "url": '@Url.Action("GetAccounts", "ChartOfAccounts")',
+                    "type": "GET",
+                    "datatype": "json",
+                    "error": function(xhr) { console.error("AJAX error:", xhr.responseText); }
+                },
+                "columns": [
+                    { "data": "accountCode" },
+                    { "data": "accountName" },
+                    { "data": "accountType" },
+                    { "data": "openingBalance" },
+                    { "data": "currentBalance" },
+                    {
+                        "data": "id",
+                        "render": function(data) {
+                            return `<a href='/ChartOfAccounts/Details/${data}'>Details</a> |
+                                    <a href='/ChartOfAccounts/Edit/${data}'>Edit</a> |
+                                    <a href='/ChartOfAccounts/Delete/${data}'>Delete</a>`;
+                        },
+                        "orderable": false
+                    }
+                ]
+            });
+        });
+    </script>
 }

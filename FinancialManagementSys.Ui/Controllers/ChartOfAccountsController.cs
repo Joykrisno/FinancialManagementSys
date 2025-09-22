@@ -1,7 +1,6 @@
 ﻿using FinancialManagement.Domain.Entities;
 using FinancialManagement.Web.Models.ApiResponse;
 using FinancialManagement.Web.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialManagement.Web.Controllers
@@ -16,33 +15,33 @@ namespace FinancialManagement.Web.Controllers
         }
 
         // GET: ChartOfAccounts
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var response = await _apiService.GetAsync<ApiListResponse<ChartOfAccount>>("ChartOfAccounts");
-
-            if (response == null || !response.Success)
-            {
-                ViewBag.Error = response?.Message ?? "Failed to load Chart of Accounts.";
-                return View(new List<ChartOfAccount>());
-            }
-
-            var accounts = response.Data?.Data ?? new List<ChartOfAccount>();
-
-            return View(accounts);
+            return View();
         }
 
+        // Ajax endpoint for DataTable
+        [HttpGet]
+        public async Task<IActionResult> GetAccounts()
+        {
+            var response = await _apiService.GetAsync<ApiListResponse<ChartOfAccount>>("ChartOfAccounts");
+            var accounts = response?.Data?.Data ?? new List<ChartOfAccount>();
 
+            // DataTables expects { data: [...] }
+            return Json(new { data = accounts });
+        }
 
-        // GET: ChartOfAccounts/Details/5
+        // GET: ChartOfAccounts/Details
         public async Task<IActionResult> Details(int id)
         {
             var account = await _apiService.GetAsync<ChartOfAccount>($"ChartOfAccounts/{id}");
             if (account == null)
-            {
-                return NotFound();
-            }
+                return NotFound(); 
+
             return View(account);
         }
+
+
 
         // GET: ChartOfAccounts/Create
         public IActionResult Create()
@@ -59,9 +58,8 @@ namespace FinancialManagement.Web.Controllers
             {
                 var result = await _apiService.PostAsync("ChartOfAccounts", account);
                 if (result.IsSuccess)
-                {
                     return RedirectToAction(nameof(Index));
-                }
+
                 ModelState.AddModelError(string.Empty, result.ErrorMessage);
             }
             return View(account);
@@ -72,9 +70,8 @@ namespace FinancialManagement.Web.Controllers
         {
             var account = await _apiService.GetAsync<ChartOfAccount>($"ChartOfAccounts/{id}");
             if (account == null)
-            {
                 return NotFound();
-            }
+
             return View(account);
         }
 
@@ -84,17 +81,14 @@ namespace FinancialManagement.Web.Controllers
         public async Task<IActionResult> Edit(int id, ChartOfAccount account)
         {
             if (id != account.Id)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 var result = await _apiService.PutAsync($"ChartOfAccounts/{id}", account);
                 if (result.IsSuccess)
-                {
                     return RedirectToAction(nameof(Index));
-                }
+
                 ModelState.AddModelError(string.Empty, result.ErrorMessage);
             }
             return View(account);
@@ -105,9 +99,8 @@ namespace FinancialManagement.Web.Controllers
         {
             var account = await _apiService.GetAsync<ChartOfAccount>($"ChartOfAccounts/{id}");
             if (account == null)
-            {
                 return NotFound();
-            }
+
             return View(account);
         }
 
@@ -118,9 +111,8 @@ namespace FinancialManagement.Web.Controllers
         {
             var result = await _apiService.DeleteAsync($"ChartOfAccounts/{id}");
             if (result.IsSuccess)
-            {
                 return RedirectToAction(nameof(Index));
-            }
+
             return RedirectToAction(nameof(Delete), new { id, error = result.ErrorMessage });
         }
     }

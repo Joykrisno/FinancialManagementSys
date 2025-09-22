@@ -1,0 +1,19 @@
+﻿@model FinancialManagement.Domain.Entities.ChartOfAccount
+@{
+    ViewData["Title"] = "Chart of Account Details";
+}
+
+<h1>Chart of Account Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.AccountName (@Model.AccountCode)</h5>
+        <p class="card-text"><strong>Type:</strong> @Model.AccountType</p>
+        <p class="card-text"><strong>Description:</strong> @Model.Description</p>
+        <p class="card-text"><strong>Parent Account Id:</strong> @Model.ParentAccountId</p>
+        <p class="card-text"><strong>Opening Balance:</strong> @Model.OpeningBalance</p>
+        <p class="card-text"><strong>Status:</strong> @(Model.IsActive ? "Active" : "Inactive")</p>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
