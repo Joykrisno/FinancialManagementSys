@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Journal Entries";
+}
+
+<h2>Journal Entries</h2>
+<a asp-action="Create" class="btn btn-primary mb-3">New Journal Entry</a>
+
+<table id="journalTable" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Journal Number</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>User</th>
+            <th>Is Posted</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#journalTable').DataTable({
+                ajax: {
+                    url: '/api/JournalEntry',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'journalNumber' },
+                    { data: 'journalDate' },
+                    { data: 'description' },
+                    { data: 'userName' },
+                    { data: 'isPosted' },
+                    {
+                        data: 'id',
+                        render: function (data) {
+                            return `<a href='/JournalEntry/Edit/${data}' class='btn btn-sm btn-warning'>Edit</a>`;
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+}
