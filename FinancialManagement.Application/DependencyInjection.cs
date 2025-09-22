@@ -1,8 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using FinancialManagement.Application.Common.Mappings;
 
 namespace FinancialManagement.Application
 {
@@ -10,13 +10,13 @@ namespace FinancialManagement.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            // Add AutoMapper
-            services.AddAutoMapper(typeof(MappingProfile));
+            // AutoMapper 12.x compatible DI
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // Add MediatR
+            // MediatR
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-            // Add FluentValidation
+            // FluentValidation
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;
