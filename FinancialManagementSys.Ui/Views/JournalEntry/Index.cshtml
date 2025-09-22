@@ -22,28 +22,54 @@
 </table>
 
 @section Scripts {
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#journalTable').DataTable({
                 ajax: {
-                    url: '/api/JournalEntry',
-                    dataSrc: ''
+                    url: '@Url.Action("GetJournalEntries", "JournalEntry")',
+                    type: 'GET',
+                    dataSrc: '',
+                    error: function(xhr, error, code) {
+                        console.log('DataTables Ajax Error:', error);
+                        console.log('Status:', xhr.status);
+                        console.log('Response:', xhr.responseText);
+                        alert('Failed to load data. Check console for details.');
+                    }
                 },
                 columns: [
                     { data: 'id' },
                     { data: 'journalNumber' },
-                    { data: 'journalDate' },
+                    {
+                        data: 'journalDate',
+                        render: function(data) {
+                            if (data) {
+                                return new Date(data).toLocaleDateString();
+                            }
+                            return '';
+                        }
+                    },
                     { data: 'description' },
                     { data: 'userName' },
-                    { data: 'isPosted' },
+                    {
+                        data: 'isPosted',
+                        render: function(data) {
+                            return data ? 'Yes' : 'No';
+                        }
+                    },
                     {
                         data: 'id',
                         render: function (data) {
-                            return `<a href='/JournalEntry/Edit/${data}' class='btn btn-sm btn-warning'>Edit</a>`;
+                            return `<a href='@Url.Action("Edit", "JournalEntry")/${data}' class='btn btn-sm btn-warning'>Edit</a>`;
                         }
                     }
-                ]
+                ],
+                processing: true,
+                serverSide: false,
+                responsive: true,
+                language: {
+                    emptyTable: "No journal entries found",
+                    loadingRecords: "Loading journal entries..."
+                }
             });
         });
     </script>

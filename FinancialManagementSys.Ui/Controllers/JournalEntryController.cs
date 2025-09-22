@@ -24,7 +24,6 @@ namespace FinancialManagementSystem.Web.Controllers
             var token = HttpContext.Session.GetString("JWToken");
             if (!string.IsNullOrEmpty(token))
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             return client;
         }
 
@@ -32,6 +31,35 @@ namespace FinancialManagementSystem.Web.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        // API endpoint for DataTables Ajax call
+        [HttpGet]
+        public async Task<IActionResult> GetJournalEntries()
+        {
+            try
+            {
+                var client = CreateClient();
+                var response = await client.GetAsync("api/JournalEntry");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var journalEntries = JsonSerializer.Deserialize<List<JournalEntryDto>>(json,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    return Json(journalEntries);
+                }
+                else
+                {
+                    return Json(new List<JournalEntryDto>());
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Json(new List<JournalEntryDto>());
+            }
         }
 
         // GET: Create
@@ -72,7 +100,9 @@ namespace FinancialManagementSystem.Web.Controllers
                 return RedirectToAction(nameof(Index));
 
             var json = await response.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<JournalEntryDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var model = JsonSerializer.Deserialize<JournalEntryDto>(json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
             return View(model);
         }
 

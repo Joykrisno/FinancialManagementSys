@@ -6,22 +6,23 @@ namespace FinancialManagement.Application.Features.JournalEntries.Commands
     public class CreateJournalEntryCommandHandler
         : IRequestHandler<CreateJournalEntryCommand, JournalEntryDto>
     {
-        public Task<JournalEntryDto> Handle(CreateJournalEntryCommand request, CancellationToken cancellationToken)
+        public async Task<JournalEntryDto> Handle(CreateJournalEntryCommand request, CancellationToken cancellationToken)
         {
-            // 👉 এখানে তোমার Infrastructure layer (Repository/DbContext) use করবে
-            // Example static response (DB integration পরে করবে)
             var dto = new JournalEntryDto
             {
                 Id = 1,
                 JournalNumber = request.JournalNumber,
-                JournalDate = request.JournalDate,
+                TransactionDate = request.TransactionDate,
                 Description = request.Description,
+                Reference = request.Reference,
                 UserId = request.UserId,
                 IsPosted = request.IsPosted,
+                TotalDebit = request.Lines.Sum(x => x.DebitAmount),
+                TotalCredit = request.Lines.Sum(x => x.CreditAmount),
                 Lines = request.Lines
             };
 
-            return Task.FromResult(dto);
+            return await Task.FromResult(dto);
         }
     }
 }

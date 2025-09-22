@@ -1,4 +1,5 @@
 ﻿@model FinancialManagement.Application.DTOs.JournalEntry.JournalEntryDto
+
 @{
     ViewData["Title"] = "Create Journal Entry";
 }
@@ -9,39 +10,60 @@
     <div class="mb-3">
         <label asp-for="JournalNumber" class="form-label"></label>
         <input asp-for="JournalNumber" class="form-control" />
+        <span asp-validation-for="JournalNumber" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
-        <label asp-for="JournalDate" class="form-label"></label>
-        <input asp-for="JournalDate" type="datetime-local" class="form-control" />
+        <label asp-for="TransactionDate" class="form-label"></label>
+        <input asp-for="TransactionDate" type="datetime-local" class="form-control" />
+        <span asp-validation-for="TransactionDate" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
         <label asp-for="Description" class="form-label"></label>
         <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <h4>Lines</h4>
     <div id="linesContainer">
-        @for (int i = 0; i < Model.Lines.Count; i++)
+        @if (Model.Lines != null && Model.Lines.Any())
         {
-            <div class="line-item mb-2">
-                <input type="hidden" asp-for="Lines[@i].Id" />
-                <div class="row">
-                    <div class="col">
-                        <input asp-for="Lines[@i].AccountId" placeholder="Account ID" class="form-control" />
-                    </div>
-                    <div class="col">
-                        <input asp-for="Lines[@i].Description" placeholder="Description" class="form-control" />
-                    </div>
-                    <div class="col">
-                        <input asp-for="Lines[@i].DebitAmount" placeholder="Debit" class="form-control" />
-                    </div>
-                    <div class="col">
-                        <input asp-for="Lines[@i].CreditAmount" placeholder="Credit" class="form-control" />
+            @for (int i = 0; i < Model.Lines.Count; i++)
+            {
+                <div class="line-item mb-2 border p-2 rounded">
+                    <input type="hidden" asp-for="Lines[@i].Id" />
+                    <div class="row g-2">
+                        <div class="col">
+                            <label asp-for="Lines[@i].AccountId" class="form-label"></label>
+                            <input asp-for="Lines[@i].AccountId" placeholder="Account ID" class="form-control" />
+                            <span asp-validation-for="Lines[@i].AccountId" class="text-danger"></span>
+                        </div>
+                        <div class="col">
+                            <label asp-for="Lines[@i].Description" class="form-label"></label>
+                            <input asp-for="Lines[@i].Description" placeholder="Description" class="form-control" />
+                        </div>
+                        <div class="col">
+                            <label asp-for="Lines[@i].DebitAmount" class="form-label"></label>
+                            <input asp-for="Lines[@i].DebitAmount" placeholder="Debit" class="form-control" />
+                        </div>
+                        <div class="col">
+                            <label asp-for="Lines[@i].CreditAmount" class="form-label"></label>
+                            <input asp-for="Lines[@i].CreditAmount" placeholder="Credit" class="form-control" />
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted">No journal entry lines added yet.</p>
         }
     </div>
 
     <button type="submit" class="btn btn-success mt-3">Save</button>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
