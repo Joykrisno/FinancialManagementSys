@@ -1,4 +1,4 @@
-using FinancialManagement.Application;
+﻿using FinancialManagement.Application;
 using FinancialManagement.Application.Features.ChartOfAccounts.Queries;
 using FinancialManagement.Infrastructure;
 using MediatR;
@@ -69,6 +69,8 @@ namespace FinancialManagement.API
 
             builder.Services.AddMediatR(cfg =>cfg.RegisterServicesFromAssemblies(typeof(GetChartOfAccountsQueryHandler).Assembly));
 
+            // Application assembly থেকে সব handlers register করবে
+            builder.Services.AddMediatR(cfg =>cfg.RegisterServicesFromAssemblies(typeof(GetChartOfAccountByIdQueryHandler).Assembly));
 
 
             // --------------------------
