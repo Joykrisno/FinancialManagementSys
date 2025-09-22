@@ -1,6 +1,8 @@
 ﻿using FinancialManagement.Application;
 using FinancialManagement.Application.Features.ChartOfAccounts.Queries;
+using FinancialManagement.Application.Interfaces;
 using FinancialManagement.Infrastructure;
+using FinancialManagement.Infrastructure.Data;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -63,15 +65,20 @@ namespace FinancialManagement.API
             builder.Services.AddInfrastructure(builder.Configuration);
 
             // --------------------------
+            // Register DbContext and Repository
+            // --------------------------
+            builder.Services.AddScoped<IJournalEntryRepository, JournalEntryRepository>();
+
+            // --------------------------
             // MediatR registration
             // --------------------------
-
-
-            builder.Services.AddMediatR(cfg =>cfg.RegisterServicesFromAssemblies(typeof(GetChartOfAccountsQueryHandler).Assembly));
-
-            // Application assembly থেকে সব handlers register করবে
-            builder.Services.AddMediatR(cfg =>cfg.RegisterServicesFromAssemblies(typeof(GetChartOfAccountByIdQueryHandler).Assembly));
-
+            builder.Services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblies(
+                    typeof(GetChartOfAccountsQueryHandler).Assembly,
+                    typeof(FinancialManagement.Application.Features.JournalEntries.Commands.CreateJournalEntryCommandHandler).Assembly
+                );
+            });
 
             // --------------------------
             // JWT Authentication

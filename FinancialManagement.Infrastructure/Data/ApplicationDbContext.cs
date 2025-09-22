@@ -80,7 +80,7 @@ namespace FinancialManagement.Infrastructure.Data
 
                 // Relationship with JournalEntry
                 entity.HasOne(e => e.JournalEntry)
-                      .WithMany(e => e.JournalEntryLines)
+                      .WithMany(e => e.Lines)
                       .HasForeignKey(e => e.JournalEntryId)
                       .OnDelete(DeleteBehavior.Cascade);
 

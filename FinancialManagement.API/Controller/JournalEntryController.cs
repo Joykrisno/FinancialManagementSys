@@ -18,7 +18,6 @@ namespace FinancialManagementSystem.API.Controllers
             _mediator = mediator;
         }
 
-        // ✅ Get all Journal Entries
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -26,18 +25,13 @@ namespace FinancialManagementSystem.API.Controllers
             return Ok(result);
         }
 
-        // ✅ Get single Journal Entry by Id
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
-            var query = new GetJournalEntryByIdQuery { Id = id };
-            var result = await _mediator.Send(query, cancellationToken);
-
+            var result = await _mediator.Send(new GetJournalEntryByIdQuery { Id = id }, cancellationToken);
             return result is null ? NotFound() : Ok(result);
         }
 
-        // ✅ Create new Journal Entry
-        [HttpPost]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateJournalEntryCommand command, CancellationToken cancellationToken)
         {
@@ -46,29 +40,6 @@ namespace FinancialManagementSystem.API.Controllers
 
             var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-        }
-
-
-        // ✅ Update Journal Entry
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateJournalEntryCommand command, CancellationToken cancellationToken)
-        {
-            if (id != command.Id)
-                return BadRequest("Id mismatch");
-
-            var result = await _mediator.Send(command, cancellationToken);
-
-            return result is null ? NotFound() : Ok(result);
-        }
-
-        // ✅ Delete Journal Entry
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
-        {
-            var command = new DeleteJournalEntryCommand { Id = id };
-            var result = await _mediator.Send(command, cancellationToken);
-
-            return !result ? NotFound() : NoContent();
         }
     }
 }

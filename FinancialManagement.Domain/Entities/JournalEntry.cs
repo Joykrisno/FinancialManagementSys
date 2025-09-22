@@ -29,6 +29,8 @@ namespace FinancialManagement.Domain.Entities
 
         // Navigation properties (temporarily commented)
         public virtual User User { get; set; } = null!;
-         public virtual ICollection<JournalEntryLine> JournalEntryLines { get; set; } = new List<JournalEntryLine>();
+         ///public virtual ICollection<JournalEntryLine> JournalEntryLines { get; set; } = new List<JournalEntryLine>();
+        public ICollection<JournalEntryLine> Lines { get; set; } = new List<JournalEntryLine>();
+
     }
 }

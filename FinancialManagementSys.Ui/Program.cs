@@ -1,9 +1,11 @@
-﻿using System.Text;
+﻿using FinancialManagement.Application;
+using FinancialManagement.Application.Interfaces;
+using FinancialManagement.Infrastructure;
+using FinancialManagement.Infrastructure.Data;
+using FinancialManagement.Web.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using FinancialManagement.Application;
-using FinancialManagement.Infrastructure;
-using FinancialManagement.Web.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,7 +75,7 @@ builder.Services.AddSession(options =>
 
 // Register ApiService
 builder.Services.AddScoped<IApiService, ApiService>();
-
+builder.Services.AddScoped<IJournalEntryRepository, JournalEntryRepository>();
 // Register IHttpContextAccessor for DI
 builder.Services.AddHttpContextAccessor();
 
