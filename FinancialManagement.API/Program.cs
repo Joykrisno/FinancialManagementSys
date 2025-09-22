@@ -1,5 +1,7 @@
 using FinancialManagement.Application;
+using FinancialManagement.Application.Features.ChartOfAccounts.Queries;
 using FinancialManagement.Infrastructure;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -14,11 +16,13 @@ namespace FinancialManagement.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // --------------------------
+            // Add services
+            // --------------------------
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
-            // Swagger + JWT Support
+            // Swagger + JWT
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -52,12 +56,24 @@ namespace FinancialManagement.API
                 });
             });
 
+            // --------------------------
             // Application + Infrastructure
+            // --------------------------
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
-            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
+            // --------------------------
+            // MediatR registration
+            // --------------------------
+
+
+            builder.Services.AddMediatR(cfg =>cfg.RegisterServicesFromAssemblies(typeof(GetChartOfAccountsQueryHandler).Assembly));
+
+
+
+            // --------------------------
             // JWT Authentication
+            // --------------------------
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
             var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]!);
 
@@ -83,7 +99,9 @@ namespace FinancialManagement.API
 
             builder.Services.AddAuthorization();
 
+            // --------------------------
             // CORS
+            // --------------------------
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -96,7 +114,9 @@ namespace FinancialManagement.API
 
             var app = builder.Build();
 
-            // Pipeline
+            // --------------------------
+            // Middleware pipeline
+            // --------------------------
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
