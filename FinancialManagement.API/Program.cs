@@ -1,9 +1,10 @@
-using System.Text;
+using FinancialManagement.Application;
+using FinancialManagement.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using FinancialManagement.Application;
-using FinancialManagement.Infrastructure;
+using System.Reflection;
+using System.Text;
 
 namespace FinancialManagement.API
 {
@@ -58,6 +59,7 @@ namespace FinancialManagement.API
             // Add Application and Infrastructure services
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
             // Add JWT Authentication
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");

@@ -1,16 +1,17 @@
-﻿using System.Security.Claims;
+﻿using FinancialManagement.Application.Common.Models;
+using FinancialManagement.Application.DTOs.ChartOfAccount;
+using FinancialManagement.Application.Features.ChartOfAccounts.Commands;
+using FinancialManagement.Application.Features.ChartOfAccounts.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using FinancialManagement.Application.Features.ChartOfAccounts.Commands;
-using FinancialManagement.Application.Features.ChartOfAccounts.Queries;
-using FinancialManagement.Application.DTOs.ChartOfAccount;
+using System.Security.Claims;
 
 namespace FinancialManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    //[Authorize] // Uncomment if JWT/Auth is needed
     public class ChartOfAccountsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,6 +21,7 @@ namespace FinancialManagement.API.Controllers
             _mediator = mediator;
         }
 
+        // GET: api/ChartOfAccounts
         [HttpGet]
         public async Task<IActionResult> GetChartOfAccounts([FromQuery] GetChartOfAccountsQuery query)
         {
@@ -27,17 +29,36 @@ namespace FinancialManagement.API.Controllers
             {
                 var result = await _mediator.Send(query);
                 if (!result.Success)
-                {
                     return BadRequest(result);
-                }
+
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Success = false, Message = "Internal server error", Error = ex.Message });
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = "Internal server error",
+                    Error = ex.Message
+                });
             }
         }
 
+        // GET: api/ChartOfAccounts/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetChartOfAccountById(int id)
+        {
+            var query = new GetChartOfAccountByIdQuery { Id = id };
+            var result = await _mediator.Send(query);
+
+            if (!result.Success)
+                return NotFound(new { Success = false, Message = result.Message });
+
+            return Ok(result);
+        }
+
+
+        // POST: api/ChartOfAccounts
         [HttpPost]
         public async Task<IActionResult> CreateChartOfAccount([FromBody] CreateChartOfAccountDto createDto)
         {
@@ -67,20 +88,24 @@ namespace FinancialManagement.API.Controllers
 
                 var result = await _mediator.Send(command);
                 if (!result.Success)
-                {
                     return BadRequest(result);
-                }
 
-                return CreatedAtAction(nameof(GetChartOfAccounts), new { id = result.Data?.Id }, result);
+                return CreatedAtAction(nameof(GetChartOfAccountById), new { id = result.Data?.Id }, result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Success = false, Message = "Internal server error", Error = ex.Message });
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = "Internal server error",
+                    Error = ex.Message
+                });
             }
         }
 
+        // GET: api/ChartOfAccounts/account-types
         [HttpGet("account-types")]
-        [AllowAnonymous] // This can be public as it's just returning static data
+        [AllowAnonymous]
         public IActionResult GetAccountTypes()
         {
             try
@@ -97,7 +122,12 @@ namespace FinancialManagement.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Success = false, Message = "Internal server error", Error = ex.Message });
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = "Internal server error",
+                    Error = ex.Message
+                });
             }
         }
     }
