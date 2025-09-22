@@ -25,6 +25,7 @@ namespace FinancialManagementSystem.API.Controllers
             return Ok(result);
         }
 
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {

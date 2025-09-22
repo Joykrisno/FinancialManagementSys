@@ -13,7 +13,12 @@ namespace FinancialManagement.Infrastructure.Data
         {
             _context = context;
         }
-
+        public async Task<List<JournalEntry>> GetAllWithLinesAsync()
+        {
+            return await _context.JournalEntries
+                                 .Include(e => e.Lines)
+                                 .ToListAsync();
+        }
         public async Task<JournalEntry> AddAsync(JournalEntry entity)
         {
             await _context.JournalEntries.AddAsync(entity);

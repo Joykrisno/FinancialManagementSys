@@ -74,5 +74,7 @@ namespace FinancialManagement.Application.Features.JournalEntries.Commands
                 }).ToList()
             };
         }
+
+
     }
 }

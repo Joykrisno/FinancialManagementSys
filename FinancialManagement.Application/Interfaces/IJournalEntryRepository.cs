@@ -5,6 +5,7 @@ namespace FinancialManagement.Application.Interfaces
 {
     public interface IJournalEntryRepository
     {
+        Task<List<JournalEntry>> GetAllWithLinesAsync();
         Task<JournalEntry> AddAsync(JournalEntry entity);
         Task SaveChangesAsync();
         Task<JournalEntry> GetByIdAsync(int id);
