@@ -1,58 +1,81 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FinancialManagement.Application.DTOs.JournalEntry
+﻿namespace FinancialManagement.Application.DTOs.JournalEntry
 {
+    // -----------------------------
+    // Main JournalEntry DTO
+    // -----------------------------
     public class JournalEntryDto
     {
         public int Id { get; set; }
         public string JournalNumber { get; set; } = string.Empty;
-        public DateTime TransactionDate { get; set; }
+        public DateTime JournalDate { get; set; }
         public string Description { get; set; } = string.Empty;
-        public string Reference { get; set; } = string.Empty;
-        public decimal TotalDebit { get; set; }
-        public decimal TotalCredit { get; set; }
+        public int UserId { get; set; }
         public bool IsPosted { get; set; }
-        public DateTime? PostedDate { get; set; }
-        public string? PostedBy { get; set; }
         public string UserName { get; set; } = string.Empty;
-        public DateTime CreatedDate { get; set; }
-        public List<JournalEntryLineDto> JournalEntryLines { get; set; } = new List<JournalEntryLineDto>();
+
+        // Lines of the Journal Entry
+        public List<JournalEntryLineDto> Lines { get; set; } = new();
     }
 
+    // -----------------------------
+    // DTO for creating JournalEntry lines
+    // -----------------------------
+    public class CreateJournalEntryLineDto
+    {
+        public int AccountId { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string Reference { get; set; } = string.Empty;
+        public decimal DebitAmount { get; set; }
+        public decimal CreditAmount { get; set; }
+        public int LineNumber { get; set; }
+    }
+
+    // -----------------------------
+    // DTO for updating JournalEntry lines
+    // -----------------------------
+    public class UpdateJournalEntryLineDto
+    {
+        public int Id { get; set; }
+        public int AccountId { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string Reference { get; set; } = string.Empty;
+        public decimal DebitAmount { get; set; }
+        public decimal CreditAmount { get; set; }
+        public int LineNumber { get; set; }
+    }
+
+    // -----------------------------
+    // DTO for creating JournalEntry
+    // -----------------------------
     public class CreateJournalEntryDto
     {
-        [Required(ErrorMessage = "Transaction Date is required")]
-        public DateTime TransactionDate { get; set; }
-
-        [Required(ErrorMessage = "Description is required")]
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+        public DateTime JournalDate { get; set; }
         public string Description { get; set; } = string.Empty;
-
-        [StringLength(100, ErrorMessage = "Reference cannot exceed 100 characters")]
         public string Reference { get; set; } = string.Empty;
+        public int UserId { get; set; }
+        public bool IsPosted { get; set; }
 
-        [Required(ErrorMessage = "At least one journal entry line is required")]
-        [MinLength(2, ErrorMessage = "At least two journal entry lines are required")]
-        public List<CreateJournalEntryLineDto> JournalEntryLines { get; set; } = new List<CreateJournalEntryLineDto>();
+        public List<CreateJournalEntryLineDto> Lines { get; set; } = new();
     }
 
+    // -----------------------------
+    // DTO for updating JournalEntry
+    // -----------------------------
     public class UpdateJournalEntryDto
     {
-        [Required(ErrorMessage = "Transaction Date is required")]
-        public DateTime TransactionDate { get; set; }
-
-        [Required(ErrorMessage = "Description is required")]
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+        public int Id { get; set; }
+        public DateTime JournalDate { get; set; }
         public string Description { get; set; } = string.Empty;
-
-        [StringLength(100, ErrorMessage = "Reference cannot exceed 100 characters")]
         public string Reference { get; set; } = string.Empty;
+        public int UserId { get; set; }
+        public bool IsPosted { get; set; }
 
-        [Required(ErrorMessage = "At least one journal entry line is required")]
-        [MinLength(2, ErrorMessage = "At least two journal entry lines are required")]
-        public List<UpdateJournalEntryLineDto> JournalEntryLines { get; set; } = new List<UpdateJournalEntryLineDto>();
+        public List<UpdateJournalEntryLineDto> Lines { get; set; } = new();
     }
 
+    // -----------------------------
+    // DTO for JournalEntry lines when returning data
+    // -----------------------------
     public class JournalEntryLineDto
     {
         public int Id { get; set; }
@@ -64,49 +87,5 @@ namespace FinancialManagement.Application.DTOs.JournalEntry
         public decimal DebitAmount { get; set; }
         public decimal CreditAmount { get; set; }
         public int LineNumber { get; set; }
-    }
-
-    public class CreateJournalEntryLineDto
-    {
-        [Required(ErrorMessage = "Account is required")]
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid account")]
-        public int AccountId { get; set; }
-
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
-        public string Description { get; set; } = string.Empty;
-
-        [StringLength(100, ErrorMessage = "Reference cannot exceed 100 characters")]
-        public string Reference { get; set; } = string.Empty;
-
-        [Range(0, double.MaxValue, ErrorMessage = "Debit Amount must be non-negative")]
-        public decimal DebitAmount { get; set; }
-
-        [Range(0, double.MaxValue, ErrorMessage = "Credit Amount must be non-negative")]
-        public decimal CreditAmount { get; set; }
-
-        public int LineNumber { get; set; } = 1;
-    }
-
-    public class UpdateJournalEntryLineDto
-    {
-        public int Id { get; set; }
-
-        [Required(ErrorMessage = "Account is required")]
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid account")]
-        public int AccountId { get; set; }
-
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
-        public string Description { get; set; } = string.Empty;
-
-        [StringLength(100, ErrorMessage = "Reference cannot exceed 100 characters")]
-        public string Reference { get; set; } = string.Empty;
-
-        [Range(0, double.MaxValue, ErrorMessage = "Debit Amount must be non-negative")]
-        public decimal DebitAmount { get; set; }
-
-        [Range(0, double.MaxValue, ErrorMessage = "Credit Amount must be non-negative")]
-        public decimal CreditAmount { get; set; }
-
-        public int LineNumber { get; set; } = 1;
     }
 }
