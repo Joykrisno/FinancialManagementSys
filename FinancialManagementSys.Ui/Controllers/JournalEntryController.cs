@@ -23,13 +23,10 @@ namespace FinancialManagement.Web.Controllers
             _configuration = configuration;
         }
 
-        // ✅ HttpClient তৈরি করার সময় session থেকে JWT token যোগ করা
         private HttpClient CreateClient()
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7162/api/");
-
-            // session থেকে token নাও
             var token = _httpContextAccessor.HttpContext?.Session.GetString("JwtToken");
             if (!string.IsNullOrEmpty(token))
             {
@@ -77,29 +74,56 @@ namespace FinancialManagement.Web.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Create(JournalEntryDto model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var client = CreateClient();
-            var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("JournalEntry", content);
+            try
+            {
+                var client = CreateClient();
+                var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync("JournalEntry", content);
 
-            if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["AlertMessage"] = "Journal Entry created successfully!";
+                    TempData["AlertType"] = "success"; 
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["AlertMessage"] = "Failed to create Journal Entry!";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = $"Error: {ex.Message}";
+                TempData["AlertType"] = "error";
                 return RedirectToAction(nameof(Index));
-
-            ModelState.AddModelError("", "Failed to create Journal Entry");
-            return View(model);
+            }
         }
+
+
 
         public async Task<IActionResult> Edit(int id)
         {
             var client = CreateClient();
             var response = await client.GetAsync($"JournalEntry/{id}");
 
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Failed to load journal entry.";
                 return RedirectToAction(nameof(Index));
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             var model = JsonSerializer.Deserialize<JournalEntryDto>(json,
@@ -108,7 +132,8 @@ namespace FinancialManagement.Web.Controllers
             return View(model ?? new JournalEntryDto());
         }
 
-        [HttpPost]
+
+        [HttpPost]  
         public async Task<IActionResult> Edit(JournalEntryDto model)
         {
             if (!ModelState.IsValid)

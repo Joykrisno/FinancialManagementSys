@@ -42,5 +42,18 @@ namespace FinancialManagementSystem.API.Controllers
             var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateJournalEntryCommand command, CancellationToken cancellationToken)
+        {
+            if (id != command.Id)
+                return BadRequest(new { Message = "ID mismatch between route and payload." });
+
+            var result = await _mediator.Send(command, cancellationToken);
+            if (result == null)
+                return NotFound(new { Message = $"Journal Entry with ID {id} not found." });
+
+            return Ok(result);
+        }
     }
 }

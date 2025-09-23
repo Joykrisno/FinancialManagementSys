@@ -1,4 +1,6 @@
-﻿namespace FinancialManagement.Application.DTOs.JournalEntry
+﻿using System.Text.Json.Serialization;
+
+namespace FinancialManagement.Application.DTOs.JournalEntry
 {
     // -----------------------------
     // Main JournalEntry DTO
@@ -7,6 +9,8 @@
     {
         public int Id { get; set; }
         public string JournalNumber { get; set; } = string.Empty;
+
+        [JsonPropertyName("journalDate")]
         public DateTime TransactionDate { get; set; }  // Changed from JournalDate to TransactionDate
         public string Description { get; set; } = string.Empty;
         public string Reference { get; set; } = string.Empty;  // Added Reference field

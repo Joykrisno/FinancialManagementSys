@@ -3,6 +3,7 @@
 }
 
 <h2>Journal Entries</h2>
+
 <a asp-action="Create" class="btn btn-primary mb-3">New Journal Entry</a>
 
 <table id="journalTable" class="table table-bordered table-striped">
@@ -17,13 +18,26 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
-    </tbody>
+    <tbody></tbody>
 </table>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
+
+            // Check TempData alert message
+            var alertMessage = '@TempData["AlertMessage"]';
+            var alertType = '@TempData["AlertType"]';
+
+            if (alertMessage) {
+                if (alertType === 'success') {
+                    alert(alertMessage);
+                } else {
+                    alert('Error: ' + alertMessage);
+                }
+            }
+
+            // DataTable
             $('#journalTable').DataTable({
                 ajax: {
                     url: '@Url.Action("GetJournalEntries", "JournalEntry")',
@@ -40,12 +54,9 @@
                     { data: 'id' },
                     { data: 'journalNumber' },
                     {
-                        data: 'journalDate',
+                        data: 'transactionDate',
                         render: function(data) {
-                            if (data) {
-                                return new Date(data).toLocaleDateString();
-                            }
-                            return '';
+                            return data ? new Date(data).toLocaleDateString() : '';
                         }
                     },
                     { data: 'description' },
@@ -62,14 +73,7 @@
                             return `<a href='@Url.Action("Edit", "JournalEntry")/${data}' class='btn btn-sm btn-warning'>Edit</a>`;
                         }
                     }
-                ],
-                processing: true,
-                serverSide: false,
-                responsive: true,
-                language: {
-                    emptyTable: "No journal entries found",
-                    loadingRecords: "Loading journal entries..."
-                }
+                ]
             });
         });
     </script>

@@ -1,1 +1,67 @@
-﻿ 
+﻿@model FinancialManagement.Application.DTOs.JournalEntry.JournalEntryDto
+
+<h2>Edit Journal Entry</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="JournalNumber"></label>
+        <input asp-for="JournalNumber" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TransactionDate"></label>
+        <input asp-for="TransactionDate" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Reference"></label>
+        <input asp-for="Reference" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsPosted"></label>
+        <input asp-for="IsPosted" type="checkbox" />
+    </div>
+
+    <h4>Journal Lines</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Lines.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input asp-for="Lines[@i].AccountName" class="form-control" />
+                        <input type="hidden" asp-for="Lines[@i].Id" />
+                    </td>
+                    <td>
+                        <input asp-for="Lines[@i].DebitAmount" type="number" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Lines[@i].CreditAmount" type="number" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Lines[@i].Description" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
