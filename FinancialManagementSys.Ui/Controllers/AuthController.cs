@@ -1,26 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using FinancialManagement.Application.DTOs.Auth;
-using FinancialManagement.Application.Common.Models;
+﻿using FinancialManagement.Application.DTOs.Auth;
+using FinancialManagement.Web.Models.DTOs;
+using FinancialManagement.Web.Services;
+using Microsoft.AspNetCore.Mvc;
+using LoginDto = FinancialManagement.Web.Models.DTOs.LoginDto;
 
 namespace FinancialManagement.Web.Controllers
 {
-    public class AuthController : BaseController
+    public class AuthController : Controller
     {
-        public AuthController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
-            : base(httpClientFactory, configuration)
+        private readonly IApiService _apiService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public AuthController(IApiService apiService, IHttpContextAccessor httpContextAccessor)
         {
+            _apiService = apiService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
         public IActionResult Login()
         {
-            // If already logged in, redirect to dashboard
-            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("JwtToken")))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
-            return View();
+            return View(new LoginDto());
         }
 
         [HttpPost]
@@ -28,42 +28,35 @@ namespace FinancialManagement.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                TempData["ErrorMessage"] = "Please enter valid credentials.";
                 return View(model);
             }
 
-            try
+            var request = new LoginRequestDto
             {
-                var result = await PostAsync<ApiResponse<LoginResponseDto>>("auth/login", model);
+                Email = model.UserName,   // তোমার API তে Email লাগে
+                Password = model.Password
+            };
 
-                if (result?.Success == true && result.Data != null)
-                {
-                    // Store JWT token in session
-                    HttpContext.Session.SetString("JwtToken", result.Data.Token);
-                    HttpContext.Session.SetString("UserName", result.Data.UserName);
-                    HttpContext.Session.SetString("UserEmail", result.Data.Email);
-                    HttpContext.Session.SetString("UserRole", result.Data.Role);
+            var response = await _apiService.LoginAsync(request);
 
-                    SetSuccessMessage("Login successful!");
-                    return RedirectToAction("Index", "Dashboard");
-                }
-
-                ModelState.AddModelError("", result?.Message ?? "Login failed");
-                SetErrorMessage(result?.Message ?? "Login failed");
-            }
-            catch (Exception ex)
+            if (response != null && response.Success && response.Data != null)
             {
-                ModelState.AddModelError("", "An error occurred during login");
-                SetErrorMessage("An error occurred during login: " + ex.Message);
+                // Save Token in Session
+                _httpContextAccessor.HttpContext?.Session.SetString("JwtToken", response.Data.Token ?? "");
+
+                TempData["SuccessMessage"] = "Login successful!";
+                return RedirectToAction("Index", "Home");
             }
 
+            TempData["ErrorMessage"] = response?.Message ?? "Login failed.";
             return View(model);
         }
 
-        [HttpPost]
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
-            SetSuccessMessage("Logged out successfully!");
+            _httpContextAccessor.HttpContext?.Session.Remove("JwtToken");
+            TempData["SuccessMessage"] = "You have been logged out.";
             return RedirectToAction("Login");
         }
     }

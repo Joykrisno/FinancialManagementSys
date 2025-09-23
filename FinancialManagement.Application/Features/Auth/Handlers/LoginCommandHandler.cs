@@ -34,7 +34,7 @@ namespace FinancialManagement.Application.Features.Auth.Handlers
                     Email = user.Email,
                     UserName = user.UserName,
                     Role = user.Role,
-                    ExpiresAt = DateTime.UtcNow.AddHours(24)
+                  //  ExpiresAt = DateTime.UtcNow.AddHours(24)
                 };
 
                 return new ApiResponse<LoginResponseDto>(response, "Login successful");
