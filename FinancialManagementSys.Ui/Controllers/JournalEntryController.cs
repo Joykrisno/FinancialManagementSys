@@ -20,20 +20,20 @@ namespace FinancialManagementSystem.Web.Controllers
         private HttpClient CreateClient()
         {
             var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["ApiBaseUrl"]); // API base URL from appsettings.json
+            client.BaseAddress = new Uri(_configuration["ApiBaseUrl"]); 
             var token = HttpContext.Session.GetString("JWToken");
             if (!string.IsNullOrEmpty(token))
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             return client;
         }
 
-        // GET: JournalEntry List
+        
         public IActionResult Index()
         {
             return View();
         }
 
-        // API endpoint for DataTables Ajax call
+       
         [HttpGet]
         public async Task<IActionResult> GetJournalEntries()
         {
@@ -57,12 +57,12 @@ namespace FinancialManagementSystem.Web.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
+                
                 return Json(new List<JournalEntryDto>());
             }
         }
 
-        // GET: Create
+        
         public IActionResult Create()
         {
             var model = new JournalEntryDto
@@ -72,7 +72,7 @@ namespace FinancialManagementSystem.Web.Controllers
             return View(model);
         }
 
-        // POST: Create
+        
         [HttpPost]
         public async Task<IActionResult> Create(JournalEntryDto model)
         {
@@ -90,7 +90,7 @@ namespace FinancialManagementSystem.Web.Controllers
             return View(model);
         }
 
-        // GET: Edit
+        
         public async Task<IActionResult> Edit(int id)
         {
             var client = CreateClient();
@@ -106,7 +106,7 @@ namespace FinancialManagementSystem.Web.Controllers
             return View(model);
         }
 
-        // POST: Edit
+   
         [HttpPost]
         public async Task<IActionResult> Edit(JournalEntryDto model)
         {

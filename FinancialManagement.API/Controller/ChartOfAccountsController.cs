@@ -11,7 +11,7 @@ namespace FinancialManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize] // Uncomment if JWT/Auth is needed
+    [Authorize] 
     public class ChartOfAccountsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -21,7 +21,7 @@ namespace FinancialManagement.API.Controllers
             _mediator = mediator;
         }
 
-        // GET: api/ChartOfAccounts
+    
         [HttpGet]
         public async Task<IActionResult> GetChartOfAccounts([FromQuery] GetChartOfAccountsQuery query)
         {
@@ -44,7 +44,7 @@ namespace FinancialManagement.API.Controllers
             }
         }
 
-        // GET: api/ChartOfAccounts/{id}
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetChartOfAccountById(int id)
         {
@@ -58,7 +58,7 @@ namespace FinancialManagement.API.Controllers
         }
 
 
-        // POST: api/ChartOfAccounts
+       
         [HttpPost]
         public async Task<IActionResult> CreateChartOfAccount([FromBody] CreateChartOfAccountDto createDto)
         {
@@ -103,7 +103,7 @@ namespace FinancialManagement.API.Controllers
             }
         }
 
-        // GET: api/ChartOfAccounts/account-types
+       
         [HttpGet("account-types")]
         [AllowAnonymous]
         public IActionResult GetAccountTypes()

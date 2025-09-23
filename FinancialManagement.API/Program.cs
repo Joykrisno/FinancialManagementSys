@@ -17,14 +17,8 @@ namespace FinancialManagement.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // --------------------------
-            // Add services
-            // --------------------------
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-
-            // Swagger + JWT
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -58,20 +52,11 @@ namespace FinancialManagement.API
                 });
             });
 
-            // --------------------------
-            // Application + Infrastructure
-            // --------------------------
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
 
-            // --------------------------
-            // Register DbContext and Repository
-            // --------------------------
             builder.Services.AddScoped<IJournalEntryRepository, JournalEntryRepository>();
 
-            // --------------------------
-            // MediatR registration
-            // --------------------------
             builder.Services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(
@@ -80,9 +65,7 @@ namespace FinancialManagement.API
                 );
             });
 
-            // --------------------------
-            // JWT Authentication
-            // --------------------------
+
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
             var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]!);
 
@@ -108,9 +91,7 @@ namespace FinancialManagement.API
 
             builder.Services.AddAuthorization();
 
-            // --------------------------
-            // CORS
-            // --------------------------
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -123,9 +104,6 @@ namespace FinancialManagement.API
 
             var app = builder.Build();
 
-            // --------------------------
-            // Middleware pipeline
-            // --------------------------
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

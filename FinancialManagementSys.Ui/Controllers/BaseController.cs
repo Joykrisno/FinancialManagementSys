@@ -22,11 +22,11 @@ namespace FinancialManagement.Web.Controllers
         {
             var client = _httpClientFactory.CreateClient("ApiClient");
 
-            // Log the configuration for debugging
+            
             _logger?.LogInformation($"API Base Address: {client.BaseAddress}");
             _logger?.LogInformation($"Timeout: {client.Timeout}");
 
-            // Add JWT token to requests if available
+            
             var token = HttpContext.Session.GetString("JwtToken");
             if (!string.IsNullOrEmpty(token))
             {
@@ -93,7 +93,7 @@ namespace FinancialManagement.Web.Controllers
                     return JsonConvert.DeserializeObject<T>(responseContent);
                 }
 
-                // Handle different HTTP status codes
+                
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.Unauthorized:
@@ -188,7 +188,7 @@ namespace FinancialManagement.Web.Controllers
             TempData["ErrorMessage"] = message;
         }
 
-        // Method to test API connection
+        
         protected async Task<bool> TestApiConnection()
         {
             try

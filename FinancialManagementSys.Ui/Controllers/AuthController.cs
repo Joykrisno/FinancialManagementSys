@@ -34,7 +34,7 @@ namespace FinancialManagement.Web.Controllers
 
             var request = new LoginRequestDto
             {
-                Email = model.UserName,   // তোমার API তে Email লাগে
+                Email = model.UserName,   
                 Password = model.Password
             };
 
@@ -42,7 +42,6 @@ namespace FinancialManagement.Web.Controllers
 
             if (response != null && response.Success && response.Data != null)
             {
-                // Save Token in Session
                 _httpContextAccessor.HttpContext?.Session.SetString("JwtToken", response.Data.Token ?? "");
 
                 TempData["SuccessMessage"] = "Login successful!";

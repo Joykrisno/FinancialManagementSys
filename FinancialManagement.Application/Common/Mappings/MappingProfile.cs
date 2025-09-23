@@ -9,9 +9,6 @@ namespace FinancialManagement.Application.Common.Mappings
     {
         public MappingProfile()
         {
-            // -----------------------------
-            // ChartOfAccount mappings
-            // -----------------------------
             CreateMap<ChartOfAccount, ChartOfAccountDto>()
                 .ForMember(dest => dest.ParentAccountName,
                            opt => opt.MapFrom(src => src.ParentAccount != null ? src.ParentAccount.AccountName : null));
@@ -29,9 +26,6 @@ namespace FinancialManagement.Application.Common.Mappings
                 .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow));
 
-            // -----------------------------
-            // JournalEntry mappings
-            // -----------------------------
             CreateMap<JournalEntry, JournalEntryDto>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
@@ -50,9 +44,7 @@ namespace FinancialManagement.Application.Common.Mappings
                 .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow));
 
-            // -----------------------------
-            // JournalEntryLine mappings
-            // -----------------------------
+
             CreateMap<JournalEntryLine, JournalEntryLineDto>()
                 .ForMember(dest => dest.AccountCode, opt => opt.MapFrom(src => src.Account.AccountCode))
                 .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.AccountName));
